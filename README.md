@@ -1,1 +1,70 @@
 # fastfood-production
+
+O repositorio fastfood-production tem por objetivo disponibilizar os CRUDs para gerenciamento dos pedidos em produção do fastfood, utilizando o SQLServer para persistência dos dados.
+
+## Github Actions
+### Necessário
+* Configurar no GitHub as *Secrets and variables*, entrando em *Actions* e adicionando na parte *Repository secrets* a seguinte:
+  * AWS_ACCESS_KEY_ID 
+  * AWS_SECRET_ACCESS_KEY
+* Rodar a primeira run no [Repositório Terraform](https://github.com/pos-4soat/fastfood-infra), para criação do ECR e RDS do SQL
+
+Esse projeto tem um workflow de subir a imagem do projeto ao ECR ao realizar o merge para a branch main.
+
+Fluxo:
+* RUN 1 do terraform
+* Workflow para realizar o deploy da imagem no ECR
+
+## Execução do projeto
+Para executar o projeto é fácil, basta apenas definir os valores paras as variáveis de ambiente dele, que se encontram no launchsettings.json da API.
+Após isso, basta executar o projeto da forma que preferir, nós utilizamos o Docker para isso.
+
+### Variáveis de ambiente
+Todas as variáveis de ambiente do projeto visam fazer integração com algum serviço da AWS. Explicaremos a finalidade de cada uma:
+
+- SqlServerConnection: Conexão com banco de dados SQL. Recurso gerado no RUN 1 do terraform, através do RDS;
+
+## Arquitetura do projeto
+A seguinte arquitetura foi utilizada para o projeto:
+
+![Texto Alternativo](./images/ArqMS.png)
+
+Como decidimos utilizar a AWS como plataforma nuvem, utilizamos o ECR para armazenar e gerenciar a imagem do contêiner da aplicação, EKS para implantar e gerenciar a aplicação em um cluster Kubernetes, HPA para escalar horizontalmente a aplicação . 
+Para gerenciar melhor os dados do pedido em produção correlacionados com o pedido, optamos por utilizar o SQL Server. Por ser um banco de dados relacional, pensamos em utilizá-lo para armazenar os dados dos pedidos em produção criando relacionamentos com pedidos. Nessa solução, apenas a tabela Produção foi utilizada.
+Esse projeto possui uma conexão com o projeto de pedidos, para atualização e acompanhamento do status.
+
+## Endpoints
+
+Esse projeto possui 5 endpoints:
+
+POST /production -> Responsável por criar a linha de produção para o pedido com o seguinte json:
+```
+{
+  "items": [
+    {
+      "name": "Hamburguer",
+      "quantity": "2"
+    }
+  ],
+  "orderId": "1"
+}
+```
+
+GET /production/{orderId} -> Responsável por retornar os dados de produção de um pedido.
+
+GET /production/status/{status} -> Responsável por retornar os dados de produção dos pedidos com o status especificado.
+
+PATCH /production -> Responsável por atualizar o status da produção de um pedido com o seguinte json:
+```
+{
+  "orderId": "1",
+  "status": 4
+}
+```
+
+GET /production -> Responsável por retornar os dados de todas as produções.
+
+## Cobertura de código
+Fluxo de cobertura de código está presente no workflow, utilizando coverlet para gerar relatório:
+
+![CoberturaCodigo](./images/CoberturaCodigo.png)
