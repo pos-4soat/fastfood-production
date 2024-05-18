@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastfood-production-api
+  labels:
+    app: fastfood-production-api
+spec:
+  template:
+    metadata:
+      name: fastfood-production-api
+      labels:
+        app: fastfood-production-api
+    spec:
+      containers:
+        - name: fastfood-production-api
+          image: 339713094046.dkr.ecr.us-east-1.amazonaws.com/ecr-fastfood_production
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /health/live
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /health/ready
+              port: 80
+            initialDelaySeconds: 20
+            periodSeconds: 10
+            timeoutSeconds: 5
+          resources:
+            limits:
+              cpu: 0.5
+              memory: 400Mi
+            requests:
+              cpu: 0.2
+              memory: 128Mi
+          env:
+          - name: ConnectionStrings__SqlServerConnection
+            valueFrom:
+              secretKeyRef:
+                name: fastfood-production-secret
+                key: ConnectionStrings__SqlServerConnection
+          - name: Http__Order
+            valueFrom:
+              secretKeyRef:
+                name: fastfood-production-secret
+                key: Http__Order
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastfood-production-api
