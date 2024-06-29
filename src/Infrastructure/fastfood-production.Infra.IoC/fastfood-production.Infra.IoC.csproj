@@ -20,7 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\fastfood-production.Application\fastfood-production.Application.csproj" />
     <ProjectReference Include="..\..\Core\fastfood-production.Domain\fastfood-production.Domain.csproj" />
-    <ProjectReference Include="..\fastfood-production.Infra.Http\fastfood-production.Infra.Http.csproj" />
+    <ProjectReference Include="..\fastfood-production.Infra.RabbitMq\fastfood-production.Infra.RabbitMq.csproj" />
     <ProjectReference Include="..\fastfood-production.Infra.SqlServer\fastfood-production.Infra.SqlServer.csproj" />
   </ItemGroup>
 

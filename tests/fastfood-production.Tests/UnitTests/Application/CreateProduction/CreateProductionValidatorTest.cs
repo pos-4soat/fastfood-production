@@ -1,9 +1,4 @@
 ﻿using fastfood_production.Application.UseCases.CreateProduction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fastfood_production.Tests.UnitTests.Application.CreateProduction;
 

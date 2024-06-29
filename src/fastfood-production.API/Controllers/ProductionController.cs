@@ -1,6 +1,5 @@
 ﻿using fastfood_production.API.Controllers.Base;
 using fastfood_production.Application.Shared.BaseResponse;
-using fastfood_production.Application.UseCases.CreateProduction;
 using fastfood_production.Application.UseCases.GetAllProduction;
 using fastfood_production.Application.UseCases.GetProduction;
 using fastfood_production.Application.UseCases.GetProductionByStatus;
@@ -18,15 +17,6 @@ namespace fastfood_production.API.Controllers
     [Route("v{ver:apiVersion}/[controller]")]
     public class ProductionController(IMediator _mediator) : BaseController
     {
-        [HttpPost]
-        [SwaggerOperation(Summary = "Create production order")]
-        [SwaggerResponse((int)HttpStatusCode.OK, "OK", typeof(Response<Result<CreateProductionResponse>>))]
-        public async Task<IActionResult> CreateProduction([FromBody] CreateProductionRequest createRequest, CancellationToken cancellationToken)
-        {
-            Result<CreateProductionResponse> result = await _mediator.Send(createRequest, cancellationToken);
-            return await GetResponseFromResult(result);
-        }
-
         [HttpPatch]
         [SwaggerOperation(Summary = "Update production order")]
         [SwaggerResponse((int)HttpStatusCode.OK, "OK", typeof(Response<Result<UpdateProductionResponse>>))]
