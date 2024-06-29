@@ -1,10 +1,4 @@
-﻿using fastfood_production.Application.UseCases.CreateProduction;
-using fastfood_production.Application.UseCases.UpdateProduction;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using fastfood_production.Application.UseCases.UpdateProduction;
 
 namespace fastfood_production.Tests.UnitTests.Application.UpdateProduction;
 

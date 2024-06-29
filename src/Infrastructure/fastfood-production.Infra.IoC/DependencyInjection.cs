@@ -1,7 +1,8 @@
 ﻿using fastfood_production.Application.Shared.BaseResponse;
-using fastfood_production.Domain.Contracts.Http;
+using fastfood_production.Domain.Contracts.RabbitMq;
 using fastfood_production.Domain.Contracts.Repository;
-using fastfood_production.Infra.Http;
+using fastfood_production.Infra.RabbitMq;
+using fastfood_production.Infra.RabbitMq.Settings;
 using fastfood_production.Infra.SqlServer.Context;
 using fastfood_production.Infra.SqlServer.Repository;
 using FluentValidation;
@@ -21,11 +22,11 @@ public static class DependencyInjection
     public static void RegisterServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.ConfigureBehavior();
+        services.ConfigureSettings(configuration);
         services.ConfigureServices();
         services.ConfigureAutomapper();
         services.ConfigureMediatr();
         services.ConfigureFluentValidation();
-        services.ConfigureHttpClient(configuration);
         services.ConfigureDatabase(configuration);
     }
 
@@ -56,18 +57,12 @@ public static class DependencyInjection
     private static void ConfigureServices(this IServiceCollection services)
     {
         services.AddScoped<IProductionRepository, ProductionRepository>();
+        services.AddSingleton<IConsumerService, ConsumerService>();
     }
 
-    private static void ConfigureHttpClient(this IServiceCollection services, IConfiguration configuration)
+    private static void ConfigureSettings(this IServiceCollection services, IConfiguration configuration)
     {
-        IConfiguration externalConfig = configuration.GetSection("Http");
-        string baseUrl = externalConfig.GetSection("Order").Value;
-
-        services.AddTransient<IOrderHttpClient>(provider =>
-        {
-            string? baseAddress = baseUrl;
-            return new OrderHttpClient(baseAddress);
-        });
+        services.Configure<RabbitMqSettings>(configuration.GetSection("RabbitMq"));
     }
 
     private static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)

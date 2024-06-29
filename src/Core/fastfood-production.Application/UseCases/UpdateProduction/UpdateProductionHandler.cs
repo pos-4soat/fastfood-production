@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using fastfood_production.Application.Shared.BaseResponse;
-using fastfood_production.Domain.Contracts.Http;
+using fastfood_production.Domain.Contracts.RabbitMq;
 using fastfood_production.Domain.Contracts.Repository;
 using fastfood_production.Domain.Entity;
 using fastfood_production.Domain.Enum;
@@ -9,11 +9,11 @@ using MediatR;
 namespace fastfood_production.Application.UseCases.UpdateProduction;
 
 public class UpdateProductionHandler(IMapper mapper,
-        IOrderHttpClient httpClient,
+        IConsumerService consumerService,
         IProductionRepository repository) : IRequestHandler<UpdateProductionRequest, Result<UpdateProductionResponse>>
 {
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    private readonly IOrderHttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private readonly IConsumerService _consumerService = consumerService ?? throw new ArgumentNullException(nameof(consumerService));
     private readonly IProductionRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
     public async Task<Result<UpdateProductionResponse>> Handle(UpdateProductionRequest request, CancellationToken cancellationToken)
@@ -27,20 +27,11 @@ public class UpdateProductionHandler(IMapper mapper,
             return Result<UpdateProductionResponse>.Failure("PBE005");
 
         if (request.Status.Equals(ProductionStatus.InProgress))
-        {
-            bool updated = await _httpClient.UpdateOrderStatus(result.OrderId, cancellationToken, 3);
-
-            if (!updated)
-                return Result<UpdateProductionResponse>.Failure("PBE003");
-        }
+            _consumerService.PublishOrder(result.OrderId, 3);
 
         if (request.Status.Equals(ProductionStatus.Finished))
-        {
-            bool updated = await _httpClient.UpdateOrderStatus(result.OrderId, cancellationToken, (int)ProductionStatus.Delivered);
+            _consumerService.PublishOrder(result.OrderId, 4);
 
-            if (!updated)
-                return Result<UpdateProductionResponse>.Failure("PBE003");
-        }
         result.Status = request.Status;
 
         await _repository.EditProductionAsync(result, cancellationToken);

@@ -1,12 +1,10 @@
 ﻿using fastfood_production.Application.Shared.BaseResponse;
 using fastfood_production.Application.UseCases.CreateProduction;
 using fastfood_production.Domain.Entity;
-using fastfood_production.Domain.Enum;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Net;
 
-namespace fastfood_production.Tests.UnitTests.Application.CreatePayment;
+namespace fastfood_production.Tests.UnitTests.Application.CreateProduction;
 
 public class CreateProductionHandlerTest : TestFixture
 {
@@ -16,9 +14,8 @@ public class CreateProductionHandlerTest : TestFixture
         CreateProductionRequest request = _modelFakerFactory.GenerateRequest<CreateProductionRequest>();
 
         _repositoryMock.SetupGetProductionAsync(null);
-        _orderHttpClientMock.SetupUpdateOrderStatus(true);
 
-        CreateProductionHandler service = new(_mapper, _orderHttpClientMock.Object, _repositoryMock.Object);
+        CreateProductionHandler service = new(_mapper, _consumerMock.Object, _repositoryMock.Object);
 
         Result<CreateProductionResponse> result = await service.Handle(request, default);
 
@@ -30,8 +27,8 @@ public class CreateProductionHandlerTest : TestFixture
         _repositoryMock.VerifyGetProductionAsync(request.OrderId, Times.Once());
         _repositoryMock.VerifyAddProductionAsync(Times.Once());
         _repositoryMock.VerifyNoOtherCalls();
-        _orderHttpClientMock.VerifyUpdateOrderStatus(request.OrderId, Times.Once());
-        _orderHttpClientMock.VerifyNoOtherCalls();
+        _consumerMock.VerifyPublishOrder();
+        _consumerMock.VerifyNoOtherCalls();
     }
 
     [Test, Description("Should return production created previously")]
@@ -42,7 +39,7 @@ public class CreateProductionHandlerTest : TestFixture
 
         _repositoryMock.SetupGetProductionAsync(entity);
 
-        CreateProductionHandler service = new(_mapper, _orderHttpClientMock.Object, _repositoryMock.Object);
+        CreateProductionHandler service = new(_mapper, _consumerMock.Object, _repositoryMock.Object);
 
         Result<CreateProductionResponse> result = await service.Handle(request, default);
 
@@ -50,27 +47,6 @@ public class CreateProductionHandlerTest : TestFixture
 
         _repositoryMock.VerifyGetProductionAsync(request.OrderId, Times.Once());
         _repositoryMock.VerifyNoOtherCalls();
-        _orderHttpClientMock.VerifyNoOtherCalls();
-    }
-
-    [Test, Description("Should return fail order update")]
-    public async Task ShouldReturnFailedOrderUpdate()
-    {
-        CreateProductionRequest request = _modelFakerFactory.GenerateRequest<CreateProductionRequest>();
-
-        _repositoryMock.SetupGetProductionAsync(null);
-        _orderHttpClientMock.SetupUpdateOrderStatus(false);
-
-        CreateProductionHandler service = new(_mapper, _orderHttpClientMock.Object, _repositoryMock.Object);
-
-        Result<CreateProductionResponse> result = await service.Handle(request, default);
-
-        AssertExtensions.ResultIsFailure(result, "PBE003", HttpStatusCode.BadRequest);
-
-        _repositoryMock.VerifyGetProductionAsync(request.OrderId, Times.Once());
-        _repositoryMock.VerifyAddProductionAsync(Times.Once());
-        _repositoryMock.VerifyNoOtherCalls();
-        _orderHttpClientMock.VerifyUpdateOrderStatus(request.OrderId, Times.Once());
-        _orderHttpClientMock.VerifyNoOtherCalls();
+        _consumerMock.VerifyNoOtherCalls();
     }
 }

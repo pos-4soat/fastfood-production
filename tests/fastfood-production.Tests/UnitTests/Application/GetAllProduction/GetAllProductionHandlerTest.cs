@@ -2,11 +2,6 @@
 using fastfood_production.Application.UseCases.GetAllProduction;
 using fastfood_production.Domain.Entity;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fastfood_production.Tests.UnitTests.Application.GetAllProduction;
 

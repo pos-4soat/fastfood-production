@@ -1,14 +1,8 @@
 ﻿using fastfood_production.Application.Shared.BaseResponse;
-using fastfood_production.Application.UseCases.GetProductionByStatus;
 using fastfood_production.Application.UseCases.UpdateProduction;
 using fastfood_production.Domain.Entity;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fastfood_production.Tests.UnitTests.Application.UpdateProduction;
 
@@ -23,9 +17,8 @@ public class UpdateProductionHandlerTest : TestFixture
         entity.Status = (Domain.Enum.ProductionStatus)1;
 
         _repositoryMock.SetupGetProductionAsync(entity);
-        _orderHttpClientMock.SetupUpdateOrderStatus(true);
 
-        UpdateProductionHandler service = new(_mapper, _orderHttpClientMock.Object, _repositoryMock.Object);
+        UpdateProductionHandler service = new(_mapper, _consumerMock.Object, _repositoryMock.Object);
 
         Result<UpdateProductionResponse> result = await service.Handle(request, default);
 
@@ -34,8 +27,8 @@ public class UpdateProductionHandlerTest : TestFixture
         _repositoryMock.VerifyGetProductionAsync(request.OrderId, Times.Once());
         _repositoryMock.VerifyEditProductionAsync(Times.Once());
         _repositoryMock.VerifyNoOtherCalls();
-        _orderHttpClientMock.VerifyUpdateOrderStatus(request.OrderId, Times.Once());
-        _orderHttpClientMock.VerifyNoOtherCalls();
+        _consumerMock.VerifyPublishOrder();
+        _consumerMock.VerifyNoOtherCalls();
     }
 
     [Test, Description("Should update production t0 finished successfully")]
@@ -47,9 +40,8 @@ public class UpdateProductionHandlerTest : TestFixture
         entity.Status = (Domain.Enum.ProductionStatus)2;
 
         _repositoryMock.SetupGetProductionAsync(entity);
-        _orderHttpClientMock.SetupUpdateOrderStatus(true);
 
-        UpdateProductionHandler service = new(_mapper, _orderHttpClientMock.Object, _repositoryMock.Object);
+        UpdateProductionHandler service = new(_mapper, _consumerMock.Object, _repositoryMock.Object);
 
         Result<UpdateProductionResponse> result = await service.Handle(request, default);
 
@@ -58,8 +50,8 @@ public class UpdateProductionHandlerTest : TestFixture
         _repositoryMock.VerifyGetProductionAsync(request.OrderId, Times.Once());
         _repositoryMock.VerifyEditProductionAsync(Times.Once());
         _repositoryMock.VerifyNoOtherCalls();
-        _orderHttpClientMock.VerifyUpdateOrderStatus(request.OrderId, Times.Once());
-        _orderHttpClientMock.VerifyNoOtherCalls();
+        _consumerMock.VerifyPublishOrder();
+        _consumerMock.VerifyNoOtherCalls();
     }
 
     [Test, Description("Should return production not found")]
@@ -69,7 +61,7 @@ public class UpdateProductionHandlerTest : TestFixture
 
         _repositoryMock.SetupGetProductionAsync(null);
 
-        UpdateProductionHandler service = new(_mapper, _orderHttpClientMock.Object, _repositoryMock.Object);
+        UpdateProductionHandler service = new(_mapper, _consumerMock.Object, _repositoryMock.Object);
 
         Result<UpdateProductionResponse> result = await service.Handle(request, default);
 
@@ -77,7 +69,7 @@ public class UpdateProductionHandlerTest : TestFixture
 
         _repositoryMock.VerifyGetProductionAsync(request.OrderId, Times.Once());
         _repositoryMock.VerifyNoOtherCalls();
-        _orderHttpClientMock.VerifyNoOtherCalls();
+        _consumerMock.VerifyNoOtherCalls();
     }
 
     [Test, Description("Should return new status invalid")]
@@ -90,7 +82,7 @@ public class UpdateProductionHandlerTest : TestFixture
 
         _repositoryMock.SetupGetProductionAsync(entity);
 
-        UpdateProductionHandler service = new(_mapper, _orderHttpClientMock.Object, _repositoryMock.Object);
+        UpdateProductionHandler service = new(_mapper, _consumerMock.Object, _repositoryMock.Object);
 
         Result<UpdateProductionResponse> result = await service.Handle(request, default);
 
@@ -98,6 +90,6 @@ public class UpdateProductionHandlerTest : TestFixture
 
         _repositoryMock.VerifyGetProductionAsync(request.OrderId, Times.Once());
         _repositoryMock.VerifyNoOtherCalls();
-        _orderHttpClientMock.VerifyNoOtherCalls();
+        _consumerMock.VerifyNoOtherCalls();
     }
 }

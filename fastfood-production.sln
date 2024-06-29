@@ -19,11 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fastfood-production.Infra.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fastfood-production.Infra.SqlServer", "src\Infrastructure\fastfood-production.Infra.SqlServer\fastfood-production.Infra.SqlServer.csproj", "{A1B98F7E-F900-4932-A920-79DED4D4CCF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fastfood-production.Infra.Http", "src\Infrastructure\fastfood-production.Infra.Http\fastfood-production.Infra.Http.csproj", "{75510447-98F0-49EF-877C-6D14B123DB90}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A2CCC09C-CFDC-4CFC-A2D2-8A4AC01AA17E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastfood-production.Tests", "tests\fastfood-production.Tests\fastfood-production.Tests.csproj", "{464E830F-E60B-4D3F-82F3-DD3511FD8653}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fastfood-production.Tests", "tests\fastfood-production.Tests\fastfood-production.Tests.csproj", "{464E830F-E60B-4D3F-82F3-DD3511FD8653}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fastfood-production.Infra.RabbitMq", "src\Infrastructure\fastfood-production.Infra.RabbitMq\fastfood-production.Infra.RabbitMq.csproj", "{0841F7BB-0218-492A-9A7C-41A853CD3A7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,14 +51,14 @@ Global
 		{A1B98F7E-F900-4932-A920-79DED4D4CCF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1B98F7E-F900-4932-A920-79DED4D4CCF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1B98F7E-F900-4932-A920-79DED4D4CCF2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{75510447-98F0-49EF-877C-6D14B123DB90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{75510447-98F0-49EF-877C-6D14B123DB90}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{75510447-98F0-49EF-877C-6D14B123DB90}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{75510447-98F0-49EF-877C-6D14B123DB90}.Release|Any CPU.Build.0 = Release|Any CPU
 		{464E830F-E60B-4D3F-82F3-DD3511FD8653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{464E830F-E60B-4D3F-82F3-DD3511FD8653}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{464E830F-E60B-4D3F-82F3-DD3511FD8653}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{464E830F-E60B-4D3F-82F3-DD3511FD8653}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0841F7BB-0218-492A-9A7C-41A853CD3A7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0841F7BB-0218-492A-9A7C-41A853CD3A7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0841F7BB-0218-492A-9A7C-41A853CD3A7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0841F7BB-0218-492A-9A7C-41A853CD3A7B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,8 +71,8 @@ Global
 		{A4696096-2A9D-4F0C-9353-67C004A423CD} = {7E7C43AE-BEB4-4F3D-B8AE-177F3BF73D3F}
 		{585A2142-7CBA-4F69-AF32-C54FA0E3F4B7} = {74C051B3-8462-41D5-8B72-05512FDF590C}
 		{A1B98F7E-F900-4932-A920-79DED4D4CCF2} = {74C051B3-8462-41D5-8B72-05512FDF590C}
-		{75510447-98F0-49EF-877C-6D14B123DB90} = {74C051B3-8462-41D5-8B72-05512FDF590C}
 		{464E830F-E60B-4D3F-82F3-DD3511FD8653} = {A2CCC09C-CFDC-4CFC-A2D2-8A4AC01AA17E}
+		{0841F7BB-0218-492A-9A7C-41A853CD3A7B} = {74C051B3-8462-41D5-8B72-05512FDF590C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EE8CABFF-A913-49C4-A49F-48B29A255408}

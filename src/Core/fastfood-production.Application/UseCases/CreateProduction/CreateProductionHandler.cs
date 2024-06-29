@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using fastfood_production.Application.Shared.BaseResponse;
-using fastfood_production.Domain.Contracts.Http;
+using fastfood_production.Domain.Contracts.RabbitMq;
 using fastfood_production.Domain.Contracts.Repository;
 using fastfood_production.Domain.Entity;
 using fastfood_production.Domain.Enum;
@@ -9,11 +9,11 @@ using MediatR;
 namespace fastfood_production.Application.UseCases.CreateProduction;
 
 public class CreateProductionHandler(IMapper mapper,
-        IOrderHttpClient httpClient,
+        IConsumerService consumerService,
         IProductionRepository repository) : IRequestHandler<CreateProductionRequest, Result<CreateProductionResponse>>
 {
     private readonly IMapper _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-    private readonly IOrderHttpClient _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+    private readonly IConsumerService _consumerService = consumerService ?? throw new ArgumentNullException(nameof(consumerService));
     private readonly IProductionRepository _repository = repository ?? throw new ArgumentNullException(nameof(repository));
 
     public async Task<Result<CreateProductionResponse>> Handle(CreateProductionRequest request, CancellationToken cancellationToken)
@@ -27,10 +27,8 @@ public class CreateProductionHandler(IMapper mapper,
 
         await _repository.AddProductionAsync(productionEntity, cancellationToken);
 
-        bool updated = await _httpClient.UpdateOrderStatus(productionEntity.OrderId, cancellationToken);
+        _consumerService.PublishOrder(productionEntity.OrderId, 2);
 
-        return !updated
-            ? Result<CreateProductionResponse>.Failure("PBE003")
-            : Result<CreateProductionResponse>.Success(_mapper.Map<CreateProductionResponse>(request), StatusResponse.CREATED);
+        return Result<CreateProductionResponse>.Success(_mapper.Map<CreateProductionResponse>(request), StatusResponse.CREATED);
     }
 }

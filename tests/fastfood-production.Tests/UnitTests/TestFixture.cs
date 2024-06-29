@@ -2,7 +2,7 @@
 using AutoMapper;
 using Bogus;
 using fastfood_production.Application.Shared.BaseResponse;
-using fastfood_production.Domain.Contracts.Http;
+using fastfood_production.Domain.Contracts.RabbitMq;
 using fastfood_production.Domain.Contracts.Repository;
 using fastfood_production.Tests.Mocks;
 using Moq;
@@ -17,7 +17,7 @@ public abstract class TestFixture
     public Faker Faker { get; init; } = new();
 
     protected ProductionRepositoryMock _repositoryMock;
-    protected OrderHttpClientMock _orderHttpClientMock;
+    protected ConsumerServiceMock _consumerMock;
     protected IMapper _mapper;
 
     protected ModelFakerFactory _modelFakerFactory;
@@ -59,13 +59,13 @@ public abstract class TestFixture
     private void AddCustomMocksToContainer()
     {
         _autoMocker.Use(new ProductionRepositoryMock(this).ConvertToBaseType());
-        _autoMocker.Use(new OrderHttpClientMock(this).ConvertToBaseType());
+        _autoMocker.Use(new ConsumerServiceMock(this).ConvertToBaseType());
     }
 
     private void InstantiateCustomMocks()
     {
         _repositoryMock = GetCustomMock<IProductionRepository, ProductionRepositoryMock>();
-        _orderHttpClientMock = GetCustomMock<IOrderHttpClient, OrderHttpClientMock>();
+        _consumerMock = GetCustomMock<IConsumerService, ConsumerServiceMock>();
     }
 
     private void CreateMapper()

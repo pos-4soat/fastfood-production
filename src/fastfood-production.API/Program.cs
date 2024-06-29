@@ -2,6 +2,7 @@
 using fastfood_production.API.HealthCheck;
 using fastfood_production.API.Middleware;
 using fastfood_production.Application.Shared.Behavior;
+using fastfood_production.Application.UseCases.Consumer;
 using fastfood_production.Infra.IoC;
 using fastfood_production.Infra.SqlServer.Context;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -77,12 +78,14 @@ services
 
 services.RegisterServices(configuration);
 
+services.AddHostedService<RabbitMQConsumerService>();
+
 WebApplication app = builder.Build();
 
 using (IServiceScope scope = app.Services.CreateScope())
 {
-ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-db.Database.Migrate();
+    ApplicationDbContext db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
 }
 
 app.UseSwagger().UseSwaggerUI();
@@ -98,14 +101,14 @@ app.UseCors(options => options
 
 app.MapHealthChecks("/health/ready", new HealthCheckOptions
 {
-Predicate = _ => _.Tags.Contains("ready"),
-ResponseWriter = HealthCheckResponseWriter.Write
+    Predicate = _ => _.Tags.Contains("ready"),
+    ResponseWriter = HealthCheckResponseWriter.Write
 });
 
 app.MapHealthChecks("/health/live", new HealthCheckOptions
 {
-Predicate = _ => _.Tags.Contains("live"),
-ResponseWriter = HealthCheckResponseWriter.Write
+    Predicate = _ => _.Tags.Contains("live"),
+    ResponseWriter = HealthCheckResponseWriter.Write
 });
 
 app.MapDefaultControllerRoute();
