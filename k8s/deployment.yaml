@@ -43,11 +43,36 @@ spec:
               secretKeyRef:
                 name: fastfood-production-secret
                 key: ConnectionStrings__SqlServerConnection
-          - name: Http__Order
+          - name: RabbitMQ__HostName
             valueFrom:
               secretKeyRef:
                 name: fastfood-production-secret
-                key: Http__Order
+                key: RabbitMQ__HostName
+          - name: RabbitMQ__UserName
+            valueFrom:
+              secretKeyRef:
+                name: fastfood-production-secret
+                key: RabbitMQ__UserName
+          - name: RabbitMQ__Password
+            valueFrom:
+              secretKeyRef:
+                name: fastfood-production-secret
+                key: RabbitMQ__Password
+          - name: RabbitMQ__PaymentQueueName
+            valueFrom:
+              secretKeyRef:
+                name: fastfood-production-secret
+                key: RabbitMQ__PaymentQueueName
+          - name: RabbitMQ__ProductionQueueName
+            valueFrom:
+              secretKeyRef:
+                name: fastfood-production-secret
+                key: RabbitMQ__ProductionQueueName
+          - name: RabbitMQ__OrderQueueName
+            valueFrom:
+              secretKeyRef:
+                name: fastfood-production-secret
+                key: RabbitMQ__OrderQueueName
   replicas: 1
   selector:
     matchLabels:
