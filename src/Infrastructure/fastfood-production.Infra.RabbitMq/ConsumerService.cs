@@ -35,12 +35,14 @@ public class ConsumerService : IConsumerService, IDisposable
             HostName = _settings.HostName,
             UserName = _settings.UserName,
             Password = _settings.Password,
+#if !DEBUG
             Port = 5671,
             Ssl = new SslOption
             {
                 Enabled = true,
                 ServerName = _settings.HostName
             }
+#endif
         };
 
         _connection = factory.CreateConnection();
@@ -95,7 +97,7 @@ public class ConsumerService : IConsumerService, IDisposable
 
     public void PublishOrder(int orderId, int status)
     {
-        OrderMessage message = new(orderId, 6);
+        OrderMessage message = new(orderId, status);
 
         byte[] body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message));
 
