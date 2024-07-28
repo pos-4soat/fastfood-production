@@ -29,7 +29,7 @@ Todas as variáveis de ambiente do projeto visam fazer integração com algum se
 ## Arquitetura do projeto
 A seguinte arquitetura foi utilizada para o projeto:
 
-![Texto Alternativo](./images/ArqMS.png)
+![Texto Alternativo](./images/ArqMS.drawio.png)
 
 Como decidimos utilizar a AWS como plataforma nuvem, utilizamos o ECR para armazenar e gerenciar a imagem do contêiner da aplicação, EKS para implantar e gerenciar a aplicação em um cluster Kubernetes, HPA para escalar horizontalmente a aplicação . 
 Para gerenciar melhor os dados do pedido em produção correlacionados com o pedido, optamos por utilizar o SQL Server. Por ser um banco de dados relacional, pensamos em utilizá-lo para armazenar os dados dos pedidos em produção criando relacionamentos com pedidos. Nessa solução, apenas a tabela Produção foi utilizada.
