@@ -37,20 +37,7 @@ Esse projeto possui uma conexão com o projeto de pedidos, para atualização e 
 
 ## Endpoints
 
-Esse projeto possui 5 endpoints:
-
-POST /production -> Responsável por criar a linha de produção para o pedido com o seguinte json:
-```
-{
-  "items": [
-    {
-      "name": "Hamburguer",
-      "quantity": "2"
-    }
-  ],
-  "orderId": "1"
-}
-```
+Esse projeto possui 4 endpoints:
 
 GET /production/{orderId} -> Responsável por retornar os dados de produção de um pedido.
 
